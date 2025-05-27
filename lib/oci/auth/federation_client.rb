@@ -1,8 +1,9 @@
-# Copyright (c) 2016, 2024, Oracle and/or its affiliates.  All rights reserved.
+# Copyright (c) 2016, 2025, Oracle and/or its affiliates.  All rights reserved.
 # This software is dual-licensed to you under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl or Apache License 2.0 as shown at http://www.apache.org/licenses/LICENSE-2.0. You may choose either license.
 
 require 'json'
 require 'net/http'
+require 'circuitbox'
 
 require 'oci/auth/internal/auth_token_request_signer'
 require 'oci/auth/session_key_supplier'
@@ -75,7 +76,7 @@ module OCI
 
       private
 
-      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       def refresh_security_token_inner
         @refresh_lock.lock
@@ -127,8 +128,11 @@ module OCI
         request[:'User-Agent'] = OCI::ApiClient.build_user_agent
 
         raw_body = nil
-        @federation_http_client.start do
-          @federation_http_client.request(request) do |response|
+        OCI::Retry.make_retrying_call(OCI::Auth::Util.default_imds_retry_policy, call_name: 'x509') do
+          OCI::Auth::Util.circuit.run do
+            response = @federation_http_client.request(request)
+            raise OCI::Errors::NetworkError.new(response.body, response.code) unless response.is_a?(Net::HTTPSuccess)
+
             raw_body = response.body
           end
         end
@@ -147,7 +151,7 @@ module OCI
         @refresh_lock.unlock if @refresh_lock.locked? && @refresh_lock.owned?
       end
 
-      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     end
   end
 end

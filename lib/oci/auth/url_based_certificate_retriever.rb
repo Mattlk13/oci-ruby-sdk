@@ -1,10 +1,11 @@
-# Copyright (c) 2016, 2024, Oracle and/or its affiliates.  All rights reserved.
+# Copyright (c) 2016, 2025, Oracle and/or its affiliates.  All rights reserved.
 # This software is dual-licensed to you under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl or Apache License 2.0 as shown at http://www.apache.org/licenses/LICENSE-2.0. You may choose either license.
 
 require 'net/http'
 require 'openssl'
 require 'securerandom'
 require 'uri'
+require 'circuitbox'
 
 module OCI
   module Auth
@@ -75,33 +76,44 @@ module OCI
         key
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity
       def refresh
         @refresh_lock.lock
-        @certificate_retrieve_http_client.start do
-          @certificate_retrieve_http_client.request(
-            OCI::Auth::Util.get_metadata_request(@certificate_url, 'get')
-          ) do |response|
+        OCI::Retry.make_retrying_call(OCI::Auth::Util.default_imds_retry_policy, call_name: 'x509') do
+          OCI::Auth::Util.circuit.run do
+            response = request_metadata(@certificate_url)
+            raise OCI::Errors::NetworkError.new(response.body, response.code) unless response.is_a?(Net::HTTPSuccess)
+
             @certificate_pem = response.body
           end
         end
 
         if @private_key_retrieve_http_client
-          @private_key_retrieve_http_client.start do
-            @private_key_retrieve_http_client.request(
-              OCI::Auth::Util.get_metadata_request(@private_key_url, 'get')
-            ) do |response|
+          OCI::Retry.make_retrying_call(OCI::Auth::Util.default_imds_retry_policy, call_name: 'x509') do
+            OCI::Auth::Util.circuit.run do
+              response = request_metadata(@private_key_url)
+              raise OCI::Errors::NetworkError.new(response.body, response.code) unless response.is_a?(Net::HTTPSuccess)
+
               @private_key_pem = response.body
-              @private_key = OpenSSL::PKey::RSA.new(
-                @private_key_pem,
-                @pass_phrase || SecureRandom.uuid
-              )
+              @private_key = OpenSSL::PKey::RSA.new(@private_key_pem, @private_key_passphrase || SecureRandom.uuid)
             end
           end
         end
-
-        nil
       ensure
         @refresh_lock.unlock if @refresh_lock.locked? && @refresh_lock.owned?
+      end
+
+      # rubocop:enable Metrics/CyclomaticComplexity
+
+      def request_metadata(url)
+        uri = URI(url)
+        Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+          response = http.request(OCI::Auth::Util.get_metadata_request(url, 'get'))
+          return response
+        end
+      rescue StandardError => e
+        pp "Request to #{url} failed: #{e.class} - #{e.message}"
+        raise
       end
     end
   end

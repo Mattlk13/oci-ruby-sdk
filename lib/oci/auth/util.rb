@@ -1,8 +1,9 @@
-# Copyright (c) 2016, 2024, Oracle and/or its affiliates.  All rights reserved.
+# Copyright (c) 2016, 2025, Oracle and/or its affiliates.  All rights reserved.
 # This software is dual-licensed to you under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl or Apache License 2.0 as shown at http://www.apache.org/licenses/LICENSE-2.0. You may choose either license.
 
 require 'openssl'
 require 'securerandom'
+require 'circuitbox'
 
 module OCI
   module Auth
@@ -39,13 +40,14 @@ module OCI
       end
 
       def self.get_metadata_request(request_url, type)
+        uri = URI(request_url)
         case type
         when 'post'
-          request = Net::HTTP::Post.new(request_url)
+          request = Net::HTTP::Post.new(uri)
         when 'get'
-          request = Net::HTTP::Get.new(request_url)
+          request = Net::HTTP::Get.new(uri)
         when 'put'
-          request = Net::HTTP::Put.new(request_url)
+          request = Net::HTTP::Put.new(uri)
         else
           raise "Unknown request-type #{type} provided."
         end
@@ -63,6 +65,33 @@ module OCI
           private_key_date,
           passphrase || SecureRandom.uuid
         )
+      end
+
+      def self.default_imds_retry_policy
+        retry_strategy_map = {
+          OCI::Retry::Functions::ShouldRetryOnError::ErrorCodeTuple.new(404, 'NotFound') => true,
+          OCI::Retry::Functions::ShouldRetryOnError::ErrorCodeTuple.new(409, 'IncorrectState') => true,
+          OCI::Retry::Functions::ShouldRetryOnError::ErrorCodeTuple.new(429, 'TooManyRequests') => true,
+          OCI::Retry::Functions::ShouldRetryOnError::ErrorCodeTuple.new(501, 'MethodNotImplemented') => false
+        }
+        OCI::Retry::RetryConfig.new(
+          base_sleep_time_millis: 1000,
+          exponential_growth_factor: 2,
+          should_retry_exception_proc:
+            OCI::Retry::Functions::ShouldRetryOnError.retry_strategy_with_customized_retry_mapping_proc(retry_strategy_map),
+          sleep_calc_millis_proc: OCI::Retry::Functions::Sleep.exponential_backoff_with_full_jitter,
+          max_attempts: 7,
+          max_elapsed_time_millis: 180_000, # 3 minutes
+          max_sleep_between_attempts_millis: 30_000
+        )
+      end
+
+      def self.circuit
+        Circuitbox.circuit(:imds_metadata, exceptions: [OCI::Errors::NetworkError, OCI::Errors::ServiceError],
+                                           volume_threshold: 10,
+                                           time_window: 120,
+                                           error_threshold: 80,
+                                           sleep_window: 30)
       end
     end
   end
