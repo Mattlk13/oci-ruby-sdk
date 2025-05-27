@@ -1,4 +1,4 @@
-# Copyright (c) 2016, 2024, Oracle and/or its affiliates.  All rights reserved.
+# Copyright (c) 2016, 2025, Oracle and/or its affiliates.  All rights reserved.
 # This software is dual-licensed to you under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl or Apache License 2.0 as shown at http://www.apache.org/licenses/LICENSE-2.0. You may choose either license.
 
 require 'oci/common'
@@ -148,6 +148,20 @@ module OCI
   autoload :EmailDataPlane, 'oci/email_data_plane/email_data_plane'
   autoload :ClusterPlacementGroups, 'oci/cluster_placement_groups/cluster_placement_groups'
   autoload :SSEReader, 'oci/sse_reader'
+  autoload :MarketplacePrivateOffer, 'oci/marketplace_private_offer/marketplace_private_offer'
+  autoload :ResourceScheduler, 'oci/resource_scheduler/resource_scheduler'
+  autoload :DemandSignal, 'oci/demand_signal/demand_signal'
+  autoload :FleetAppsManagement, 'oci/fleet_apps_management/fleet_apps_management'
+  autoload :DelegateAccessControl, 'oci/delegate_access_control/delegate_access_control'
+  autoload :GenerativeAiAgent, 'oci/generative_ai_agent/generative_ai_agent'
+  autoload :GenerativeAiAgentRuntime, 'oci/generative_ai_agent_runtime/generative_ai_agent_runtime'
+  autoload :Zpr, 'oci/zpr/zpr'
+  autoload :SecurityAttribute, 'oci/security_attribute/security_attribute'
+  autoload :Dblm, 'oci/dblm/dblm'
+  autoload :Mngdmac, 'oci/mngdmac/mngdmac'
+  autoload :LustreFileStorage, 'oci/lustre_file_storage/lustre_file_storage'
+  autoload :ModelDeployment, 'oci/model_deployment/model_deployment'
+  autoload :DistributedDatabase, 'oci/distributed_database/distributed_database'
 
   require 'oci/object_storage/transfer/transfer'
   class << self

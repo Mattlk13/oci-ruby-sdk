@@ -4,7 +4,7 @@ This is Oracle Cloud Infrastructure SDK for Ruby. This project is open source an
 
 This project is no longer being actively developed by Oracle. We will continue to address security vulnerabilities for the foreseeable future, and will respond to questions on github, but have no plans to introduce any new functionality, and may not be able to address any non-security related issues. We encourage developers to migrate to other OCI SDKs, and developers may fork this project and enhance it as they desire.
 
-**Version 2.21.1**
+**Version 2.22.0**
 
 This topic describes how to install, configure, and use the Oracle Cloud Infrastructure Ruby SDK.
 
@@ -57,7 +57,10 @@ The Ruby SDK supports the following services:
 * Data Safe
 * Data Transfer 
 * Database
+* Database Lifecycle Management service
 * Database Management
+* Delegate Access Control
+* Demand Signal service
 * DevOps service
 * Digital Assistant
 * Disaster Recovery
@@ -69,8 +72,10 @@ The Ruby SDK supports the following services:
 * Events
 * Exadata Fleet Update
 * File Storage
+* Fleet Application Management service
 * Functions
 * Fusion Apps as a Service
+* Generative AI Agent service
 * Generative AI service 
 * Generative AI Inference service
 * Generic Artifacts service
@@ -92,10 +97,14 @@ The Ruby SDK supports the following services:
 * Logging Analytics
 * Logging Search
 * Logging Ingestion
+* Lustre File service
+* Managed Services for Mac
 * Management Agent Cloud
 * Management Dashboard
 * Marketplace
+* Marketplace Private Offer Service
 * Marketplace Publisher
+* Model Deployment service
 * Monitoring
 * MySQL Database service
 * Network Firewall
@@ -106,6 +115,7 @@ The Ruby SDK supports the following services:
 * OCI Control Center
 * OCI Control Center service
 * OCI Registry
+* OCI Secure Desktops service
 * OneSubscription service
 * Operations Insights
 * Optimizer
@@ -122,10 +132,12 @@ The Ruby SDK supports the following services:
 * Queue Service
 * Quotas
 * Resource Manager
+* Resource Scheduler service
 * Search
 * Service Catalog service
 * Secret Management (for the Vault service)
 * Secure Desktops service
+* Security Attribute service
 * Service Mesh
 * Service Connector Hub
 * Source Code Management service
@@ -139,6 +151,7 @@ The Ruby SDK supports the following services:
 * Vulnerability Scanning
 * Web Application Acceleration and Security
 * Work Requests
+* Zero Trust Packet Routing service
 
 **Licensing:** This SDK and sample is dual licensed under the Universal Permissive License 1.0 and the Apache License.
 

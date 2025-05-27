@@ -1,5 +1,7 @@
-# Copyright (c) 2016, 2024, Oracle and/or its affiliates.  All rights reserved.
+# Copyright (c) 2016, 2025, Oracle and/or its affiliates.  All rights reserved.
 # This software is dual-licensed to you under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl or Apache License 2.0 as shown at http://www.apache.org/licenses/LICENSE-2.0. You may choose either license.
+
+require 'circuitbox'
 
 module OCI
   module Retry
@@ -48,6 +50,29 @@ module OCI
                                                              retry_state.last_exception.service_code))
               return DEFAULT_RETRY_MAPPING[ErrorCodeTuple.new(retry_state.last_exception.status_code,
                                                               retry_state.last_exception.service_code)]
+            end
+
+            retry_state.last_exception.status_code >= 500
+          end
+          # rubocop:enable Metrics/AbcSize
+        end
+
+        # rubocop:disable Metrics/AbcSize
+        # Returns a proc which will retry on {OCI::Errors::NetworkError} and on {OCI::Errors::ServiceError}
+        # And accept customized retry map for additional retry support
+        #
+        # @return [Proc]
+        def self.retry_strategy_with_customized_retry_mapping_proc(retry_mapping)
+          lambda do |retry_state|
+            return true if retry_state.last_exception.is_a?(Circuitbox::ServiceFailureError)
+            return true if retry_state.last_exception.is_a?(Circuitbox::OpenCircuitError)
+            return true if retry_state.last_exception.is_a?(OCI::Errors::NetworkError)
+            return false unless retry_state.last_exception.is_a?(OCI::Errors::ServiceError)
+
+            if retry_mapping.key?(ErrorCodeTuple.new(retry_state.last_exception.status_code,
+                                                     retry_state.last_exception.service_code))
+              return retry_mapping[ErrorCodeTuple.new(retry_state.last_exception.status_code,
+                                                      retry_state.last_exception.service_code)]
             end
 
             retry_state.last_exception.status_code >= 500

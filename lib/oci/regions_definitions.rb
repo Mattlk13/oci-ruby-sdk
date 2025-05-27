@@ -1,4 +1,4 @@
-# Copyright (c) 2016, 2024, Oracle and/or its affiliates.  All rights reserved.
+# Copyright (c) 2016, 2025, Oracle and/or its affiliates.  All rights reserved.
 # This software is dual-licensed to you under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl or Apache License 2.0 as shown at http://www.apache.org/licenses/LICENSE-2.0. You may choose either license.
 
 module OCI
@@ -45,6 +45,8 @@ module OCI
       REGION_US_SALTLAKE_2 = 'us-saltlake-2'.freeze,
       REGION_SA_BOGOTA_1 = 'sa-bogota-1'.freeze,
       REGION_SA_VALPARAISO_1 = 'sa-valparaiso-1'.freeze,
+      REGION_AP_SINGAPORE_2 = 'ap-singapore-2'.freeze,
+      REGION_ME_RIYADH_1 = 'me-riyadh-1'.freeze,
       REGION_US_LANGLEY_1 = 'us-langley-1'.freeze,
       REGION_US_LUKE_1 = 'us-luke-1'.freeze,
       REGION_US_GOV_ASHBURN_1 = 'us-gov-ashburn-1'.freeze,
@@ -67,8 +69,17 @@ module OCI
       REGION_EU_FRANKFURT_2 = 'eu-frankfurt-2'.freeze,
       REGION_EU_JOVANOVAC_1 = 'eu-jovanovac-1'.freeze,
       REGION_ME_DCC_DOHA_1 = 'me-dcc-doha-1'.freeze,
+      REGION_US_SOMERSET_1 = 'us-somerset-1'.freeze,
+      REGION_US_THAMES_1 = 'us-thames-1'.freeze,
       REGION_EU_DCC_ZURICH_1 = 'eu-dcc-zurich-1'.freeze,
-      REGION_ME_ABUDHABI_3 = 'me-abudhabi-3'.freeze
+      REGION_EU_CRISSIER_1 = 'eu-crissier-1'.freeze,
+      REGION_ME_ABUDHABI_3 = 'me-abudhabi-3'.freeze,
+      REGION_ME_ALAIN_1 = 'me-alain-1'.freeze,
+      REGION_ME_ABUDHABI_2 = 'me-abudhabi-2'.freeze,
+      REGION_ME_ABUDHABI_4 = 'me-abudhabi-4'.freeze,
+      REGION_AP_SEOUL_2 = 'ap-seoul-2'.freeze,
+      REGION_AP_SUWON_1 = 'ap-suwon-1'.freeze,
+      REGION_AP_CHUNCHEON_2 = 'ap-chuncheon-2'.freeze
     ]
 
     REGION_SHORT_NAMES_TO_LONG_NAMES = {
@@ -110,6 +121,8 @@ module OCI
       'aga': REGION_US_SALTLAKE_2,
       'bog': REGION_SA_BOGOTA_1,
       'vap': REGION_SA_VALPARAISO_1,
+      'xsp': REGION_AP_SINGAPORE_2,
+      'ruh': REGION_ME_RIYADH_1,
       'lfi': REGION_US_LANGLEY_1,
       'luf': REGION_US_LUKE_1,
       'ric': REGION_US_GOV_ASHBURN_1,
@@ -132,8 +145,17 @@ module OCI
       'str': REGION_EU_FRANKFURT_2,
       'beg': REGION_EU_JOVANOVAC_1,
       'doh': REGION_ME_DCC_DOHA_1,
+      'ebb': REGION_US_SOMERSET_1,
+      'ebl': REGION_US_THAMES_1,
       'avz': REGION_EU_DCC_ZURICH_1,
-      'ahu': REGION_ME_ABUDHABI_3
+      'avf': REGION_EU_CRISSIER_1,
+      'ahu': REGION_ME_ABUDHABI_3,
+      'rba': REGION_ME_ALAIN_1,
+      'rkt': REGION_ME_ABUDHABI_2,
+      'shj': REGION_ME_ABUDHABI_4,
+      'dtz': REGION_AP_SEOUL_2,
+      'dln': REGION_AP_SUWON_1,
+      'bno': REGION_AP_CHUNCHEON_2
     }
 
     # --- Start of region realm mapping ---
@@ -176,6 +198,8 @@ module OCI
       'us-saltlake-2': 'oc1'.freeze,
       'sa-bogota-1': 'oc1'.freeze,
       'sa-valparaiso-1': 'oc1'.freeze,
+      'ap-singapore-2': 'oc1'.freeze,
+      'me-riyadh-1': 'oc1'.freeze,
 
       'us-langley-1': 'oc2'.freeze,
       'us-luke-1': 'oc2'.freeze,
@@ -210,9 +234,21 @@ module OCI
 
       'me-dcc-doha-1': 'oc21'.freeze,
 
-      'eu-dcc-zurich-1': 'oc24'.freeze,
+      'us-somerset-1': 'oc23'.freeze,
+      'us-thames-1': 'oc23'.freeze,
 
-      'me-abudhabi-3': 'oc26'.freeze
+      'eu-dcc-zurich-1': 'oc24'.freeze,
+      'eu-crissier-1': 'oc24'.freeze,
+
+      'me-abudhabi-3': 'oc26'.freeze,
+      'me-alain-1': 'oc26'.freeze,
+
+      'me-abudhabi-2': 'oc29'.freeze,
+      'me-abudhabi-4': 'oc29'.freeze,
+
+      'ap-seoul-2': 'oc35'.freeze,
+      'ap-suwon-1': 'oc35'.freeze,
+      'ap-chuncheon-2': 'oc35'.freeze
     }
     # ---  end of region realm mapping  ---
 
@@ -230,8 +266,11 @@ module OCI
       'oc19': 'oraclecloud.eu'.freeze,
       'oc20': 'oraclecloud20.com'.freeze,
       'oc21': 'oraclecloud21.com'.freeze,
+      'oc23': 'oraclecloud23.com'.freeze,
       'oc24': 'oraclecloud24.com'.freeze,
-      'oc26': 'oraclecloud26.com'.freeze
+      'oc26': 'oraclecloud26.com'.freeze,
+      'oc29': 'oraclecloud29.com'.freeze,
+      'oc35': 'oraclecloud35.com'.freeze
     }
     # ---  end of realm domain mapping  ---
   end

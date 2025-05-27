@@ -1,4 +1,4 @@
-# Copyright (c) 2016, 2024, Oracle and/or its affiliates.  All rights reserved.
+# Copyright (c) 2016, 2025, Oracle and/or its affiliates.  All rights reserved.
 # This software is dual-licensed to you under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl or Apache License 2.0 as shown at http://www.apache.org/licenses/LICENSE-2.0. You may choose either license.
 
 require 'base64'
@@ -77,7 +77,19 @@ module OCI
 
     private
 
+    def process_headers(headers)
+      headers.each do |header_name, header_value|
+        if header_value.is_a?(Array) && header_value.all? { |item| item.is_a?(String) }
+          headers[header_name] = header_value.join(',')
+        elsif header_value.is_a?(Numeric)
+          headers[header_name] = header_value.to_s
+        end
+      end
+      headers
+    end
+
     def inject_missing_headers(method, headers, body, uri, operation_signing_strategy)
+      headers = process_headers(headers)
       headers[:date] ||= Time.now.utc.httpdate
       headers[:accept] ||= '*/*'
       headers[:host] ||= uri.host if @headers_to_sign_all_requests.include?(:host)
